@@ -28,10 +28,10 @@ const ServiceCard = ({ service, index }: ServiceCardProps) => {
         {/* Image */}
         <div className="relative h-56 overflow-hidden">
           <img
-            src={service.image_url || 'https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=800&h=600&fit=crop&crop=faces'}
+            src={service.image_url || 'https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&h=600&fit=crop&crop=focalpoint&fp-y=0.35'}
             alt={service.name}
-            className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
-            style={{ objectPosition: 'center top' }}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            style={{ objectPosition: 'center 30%' }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
           
