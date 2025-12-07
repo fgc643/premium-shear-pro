@@ -32,11 +32,11 @@ const AboutSection = () => {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-elevated">
               <img
-                src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80"
+                src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&h=600&fit=crop&crop=center"
                 alt="Interior da Barbearia Elite"
-                className="w-full h-[500px] object-cover"
+                className="w-full h-[500px] object-cover object-center"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent" />
             </div>
             
             {/* Floating Card */}
