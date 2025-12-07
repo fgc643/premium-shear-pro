@@ -12,7 +12,8 @@ const Hero = () => {
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1920&q=80')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1920&h=1080&fit=crop&crop=center')`,
+          backgroundPosition: 'center center',
         }}
       >
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, hsl(20 14% 4% / 0.6) 0%, hsl(20 14% 4% / 0.85) 70%, hsl(20 14% 4% / 0.95) 100%)' }} />
