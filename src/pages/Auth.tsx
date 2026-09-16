@@ -26,14 +26,16 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   
-  const { user, signIn, signUp } = useAuth();
+  const { user, isAdmin, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
+    if (!user) return;
+    const timer = setTimeout(() => {
+      navigate(isAdmin ? '/admin' : '/');
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [user, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
