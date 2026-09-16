@@ -154,6 +154,27 @@ const Admin = () => {
     }).format(price);
   };
 
+  // Caixa: agendamentos confirmados (e concluídos) agrupados por dia
+  const paidBookings = bookings.filter(
+    (b) => b.status === 'confirmed' || b.status === 'completed'
+  );
+
+  const bookingValue = (b: any) => Number(b.services?.price || 0);
+
+  const cashByDay = Object.values(
+    paidBookings.reduce((acc: Record<string, { date: string; total: number; count: number }>, b) => {
+      const key = b.booking_date;
+      if (!acc[key]) acc[key] = { date: key, total: 0, count: 0 };
+      acc[key].total += bookingValue(b);
+      acc[key].count += 1;
+      return acc;
+    }, {})
+  ).sort((a, b) => (a.date < b.date ? 1 : -1));
+
+  const todayKey = format(new Date(), 'yyyy-MM-dd');
+  const todayTotal = cashByDay.find((d) => d.date === todayKey)?.total || 0;
+  const totalGeral = paidBookings.reduce((sum, b) => sum + bookingValue(b), 0);
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
