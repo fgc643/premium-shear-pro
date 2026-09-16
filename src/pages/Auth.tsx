@@ -58,7 +58,7 @@ const Auth = () => {
         setIsLoading(true);
         const { error } = await signIn(email, password);
         if (!error) {
-          navigate('/');
+          // redirecionamento tratado no useEffect (admin vai para /admin)
         }
       } else {
         const validation = signupSchema.safeParse({ email, password, fullName });
