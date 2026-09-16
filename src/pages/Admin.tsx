@@ -237,6 +237,70 @@ const Admin = () => {
             ))}
           </div>
 
+          {/* Caixa */}
+          <div className="bg-card rounded-xl border border-border overflow-hidden mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 p-5 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-gold rounded-lg flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Caixa</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Soma diária dos agendamentos confirmados
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div>
+                  <p className="text-sm text-muted-foreground">Hoje</p>
+                  <p className="text-2xl font-display font-bold text-primary">
+                    {formatPrice(todayTotal)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total geral</p>
+                  <p className="text-2xl font-display font-bold text-foreground">
+                    {formatPrice(totalGeral)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-border hover:bg-secondary/50">
+                    <TableHead className="text-muted-foreground">Dia</TableHead>
+                    <TableHead className="text-muted-foreground">Atendimentos</TableHead>
+                    <TableHead className="text-muted-foreground text-right">Total do dia</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {cashByDay.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-10 text-muted-foreground">
+                        Nenhum agendamento confirmado ainda
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    cashByDay.map((day) => (
+                      <TableRow key={day.date} className="border-border hover:bg-secondary/30">
+                        <TableCell className="font-medium text-foreground">
+                          {format(parseISO(day.date), "EEEE, dd/MM/yyyy", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{day.count}</TableCell>
+                        <TableCell className="text-right font-semibold text-primary">
+                          {formatPrice(day.total)}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+
           {/* Filter */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="font-display text-2xl font-bold text-foreground">Agendamentos</h2>
