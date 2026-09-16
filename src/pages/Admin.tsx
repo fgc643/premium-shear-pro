@@ -431,7 +431,8 @@ const Admin = () => {
                                 <SelectItem value="completed">Concluir</SelectItem>
                                 <SelectItem value="cancelled">Cancelar</SelectItem>
                               </SelectContent>
-                            </Select>
+                              </Select>
+                            </div>
                           </TableCell>
                         </TableRow>
                       );
