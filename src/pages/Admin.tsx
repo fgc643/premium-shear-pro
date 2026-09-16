@@ -395,10 +395,33 @@ const Admin = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Select
-                              value={booking.status || 'pending'}
-                              onValueChange={(value) => updateBookingStatus(booking.id, value)}
-                            >
+                            <div className="flex items-center gap-2">
+                              {booking.status === 'pending' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 text-blue-500 border-blue-500/30 hover:bg-blue-500/10"
+                                  onClick={() => updateBookingStatus(booking.id, 'confirmed')}
+                                >
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Confirmar
+                                </Button>
+                              )}
+                              {booking.status === 'confirmed' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="h-8 text-green-500 border-green-500/30 hover:bg-green-500/10"
+                                  onClick={() => updateBookingStatus(booking.id, 'completed')}
+                                >
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Concluir
+                                </Button>
+                              )}
+                              <Select
+                                value={booking.status || 'pending'}
+                                onValueChange={(value) => updateBookingStatus(booking.id, value)}
+                              >
                               <SelectTrigger className="w-36 h-8 bg-secondary border-border text-sm">
                                 <SelectValue />
                               </SelectTrigger>
