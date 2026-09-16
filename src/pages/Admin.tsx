@@ -31,7 +31,8 @@ import {
   RefreshCw,
   CheckCircle,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Wallet
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
@@ -154,6 +155,31 @@ const Admin = () => {
     }).format(price);
   };
 
+  // Caixa: agendamentos confirmados (e concluídos) agrupados por dia
+  const paidBookings = bookings.filter(
+    (b) => b.status === 'confirmed' || b.status === 'completed'
+  );
+
+  const bookingValue = (b: any) => Number(b.services?.price || 0);
+
+  type CashDay = { date: string; total: number; count: number };
+
+  const cashMap: Record<string, CashDay> = {};
+  paidBookings.forEach((b) => {
+    const key = b.booking_date as string;
+    if (!cashMap[key]) cashMap[key] = { date: key, total: 0, count: 0 };
+    cashMap[key].total += bookingValue(b);
+    cashMap[key].count += 1;
+  });
+
+  const cashByDay: CashDay[] = Object.values(cashMap).sort((a, b) =>
+    a.date < b.date ? 1 : -1
+  );
+
+  const todayKey = format(new Date(), 'yyyy-MM-dd');
+  const todayTotal = cashByDay.find((d) => d.date === todayKey)?.total || 0;
+  const totalGeral = paidBookings.reduce((sum, b) => sum + bookingValue(b), 0);
+
   if (authLoading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -214,6 +240,70 @@ const Admin = () => {
                 <p className={`text-3xl font-display font-bold ${stat.color}`}>{stat.value}</p>
               </div>
             ))}
+          </div>
+
+          {/* Caixa */}
+          <div className="bg-card rounded-xl border border-border overflow-hidden mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-4 p-5 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-gold rounded-lg flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-foreground">Caixa</h2>
+                  <p className="text-sm text-muted-foreground">
+                    Soma diária dos agendamentos confirmados
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div>
+                  <p className="text-sm text-muted-foreground">Hoje</p>
+                  <p className="text-2xl font-display font-bold text-primary">
+                    {formatPrice(todayTotal)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total geral</p>
+                  <p className="text-2xl font-display font-bold text-foreground">
+                    {formatPrice(totalGeral)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-border hover:bg-secondary/50">
+                    <TableHead className="text-muted-foreground">Dia</TableHead>
+                    <TableHead className="text-muted-foreground">Atendimentos</TableHead>
+                    <TableHead className="text-muted-foreground text-right">Total do dia</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {cashByDay.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-10 text-muted-foreground">
+                        Nenhum agendamento confirmado ainda
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    cashByDay.map((day) => (
+                      <TableRow key={day.date} className="border-border hover:bg-secondary/30">
+                        <TableCell className="font-medium text-foreground">
+                          {format(parseISO(day.date), "EEEE, dd/MM/yyyy", { locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{day.count}</TableCell>
+                        <TableCell className="text-right font-semibold text-primary">
+                          {formatPrice(day.total)}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
 
           {/* Filter */}
