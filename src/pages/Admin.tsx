@@ -162,15 +162,19 @@ const Admin = () => {
 
   const bookingValue = (b: any) => Number(b.services?.price || 0);
 
-  const cashByDay = Object.values(
-    paidBookings.reduce((acc: Record<string, { date: string; total: number; count: number }>, b) => {
-      const key = b.booking_date;
-      if (!acc[key]) acc[key] = { date: key, total: 0, count: 0 };
-      acc[key].total += bookingValue(b);
-      acc[key].count += 1;
-      return acc;
-    }, {})
-  ).sort((a, b) => (a.date < b.date ? 1 : -1));
+  type CashDay = { date: string; total: number; count: number };
+
+  const cashMap: Record<string, CashDay> = {};
+  paidBookings.forEach((b) => {
+    const key = b.booking_date as string;
+    if (!cashMap[key]) cashMap[key] = { date: key, total: 0, count: 0 };
+    cashMap[key].total += bookingValue(b);
+    cashMap[key].count += 1;
+  });
+
+  const cashByDay: CashDay[] = Object.values(cashMap).sort((a, b) =>
+    a.date < b.date ? 1 : -1
+  );
 
   const todayKey = format(new Date(), 'yyyy-MM-dd');
   const todayTotal = cashByDay.find((d) => d.date === todayKey)?.total || 0;
