@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -38,9 +38,32 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
   
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const dateKey = date instanceof Date && !isNaN(date.getTime()) ? format(date, 'yyyy-MM-dd') : null;
+
+  const loadBooked = async (d: string) => {
+    const { data } = await supabase.rpc('get_booked_slots', { _date: d });
+    setBookedSlots((data ?? []).map((r: { booking_time: string }) => r.booking_time.slice(0, 5)));
+  };
+
+  useEffect(() => {
+    if (!dateKey || !isOpen) { setBookedSlots([]); return; }
+    loadBooked(dateKey);
+    const ch = supabase
+      .channel(`slots-${dateKey}-${Math.random()}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => loadBooked(dateKey))
+      .subscribe();
+    const iv = setInterval(() => loadBooked(dateKey), 15000);
+    return () => { supabase.removeChannel(ch); clearInterval(iv); };
+  }, [dateKey, isOpen]);
+
+  useEffect(() => {
+    if (time && bookedSlots.includes(time) && !isSuccess && !isLoading) setTime('');
+  }, [bookedSlots]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -86,7 +109,16 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         status: 'pending',
       });
 
-      if (error) throw error;
+      if (error) {
+        if ((error as { code?: string }).code === '23505') {
+          toast({ title: 'Horário indisponível', description: 'Este horário acabou de ser reservado. Escolha outro.', variant: 'destructive' });
+          setBookedSlots((s) => [...s, time]);
+          setTime('');
+          setStep(1);
+          return;
+        }
+        throw error;
+      }
 
       setIsSuccess(true);
       
@@ -185,17 +217,23 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 Escolha o Horário
               </Label>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {timeSlots.map((slot) => (
-                  <Button
-                    key={slot}
-                    type="button"
-                    variant={time === slot ? 'gold' : 'outline'}
-                    size="sm"
-                    onClick={() => setTime(slot)}
-                  >
-                    {slot}
-                  </Button>
-                ))}
+                {timeSlots.map((slot) => {
+                  const taken = bookedSlots.includes(slot);
+                  return (
+                    <Button
+                      key={slot}
+                      type="button"
+                      variant={time === slot ? 'gold' : 'outline'}
+                      size="sm"
+                      disabled={taken}
+                      className={taken ? 'line-through opacity-40' : ''}
+                      title={taken ? 'Horário indisponível' : undefined}
+                      onClick={() => setTime(slot)}
+                    >
+                      {slot}
+                    </Button>
+                  );
+                })}
               </div>
             </div>
 
