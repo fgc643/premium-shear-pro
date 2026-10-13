@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Service, supabase } from '@/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -65,7 +64,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         return;
       }
 
-      if (!date || !time) {
+      if (!safeDate || !time) {
         toast({
           title: 'Erro',
           description: 'Selecione uma data e horário',
@@ -82,7 +81,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         user_id: user?.id || null,
         customer_name: customerName.trim(),
         customer_phone: customerPhone.trim(),
-        booking_date: format(date, 'yyyy-MM-dd'),
+        booking_date: format(safeDate, 'yyyy-MM-dd'),
         booking_time: time,
         status: 'pending',
       });
@@ -108,6 +107,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   };
 
   const handleClose = () => {
+    if (isLoading) return;
     setStep(1);
     setDate(undefined);
     setTime('');
@@ -118,10 +118,9 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
     onClose();
   };
 
-  if (isSuccess) {
-    return (
-      <Dialog open={isOpen} onOpenChange={handleClose}>
-        <DialogContent className="sm:max-w-md bg-card border-border">
+  const safeDate = date instanceof Date && !isNaN(date.getTime()) ? date : undefined;
+
+  const successView = (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-6 animate-scale-in">
               <CheckCircle className="w-10 h-10 text-primary" />
@@ -130,20 +129,18 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
               Agendamento Confirmado!
             </h2>
             <p className="text-muted-foreground mb-6">
-              {service.name} em {date && format(date, "dd 'de' MMMM", { locale: ptBR })} às {time}
+              {service.name} em {safeDate && format(safeDate, "dd 'de' MMMM", { locale: ptBR })} às {time}
             </p>
             <Button variant="gold" onClick={handleClose}>
               Fechar
             </Button>
           </div>
-        </DialogContent>
-      </Dialog>
-    );
-  }
+  );
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg bg-card border-border max-h-[90vh] overflow-y-auto">
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) handleClose(); }}>
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:max-w-lg bg-card border-border max-h-[90vh] overflow-y-auto p-4 sm:p-6">
+        {isSuccess ? successView : (<>
         <DialogHeader>
           <DialogTitle className="font-display text-2xl text-foreground">
             Agendar {service.name}
@@ -175,10 +172,10 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
               <Calendar
                 mode="single"
                 selected={date}
-                onSelect={setDate}
+                onSelect={(d) => setDate(d ?? undefined)}
                 locale={ptBR}
-                disabled={(date) => date < new Date() || date.getDay() === 0}
-                className="rounded-lg border border-border bg-secondary"
+                disabled={(d) => { const t = new Date(); t.setHours(0,0,0,0); return d < t || d.getDay() === 0; }}
+                className="rounded-lg border border-border bg-secondary mx-auto w-fit max-w-full"
               />
             </div>
 
@@ -187,24 +184,26 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 <Clock className="w-4 h-4 text-primary" />
                 Escolha o Horário
               </Label>
-              <Select value={time} onValueChange={setTime}>
-                <SelectTrigger className="bg-secondary border-border">
-                  <SelectValue placeholder="Selecione um horário" />
-                </SelectTrigger>
-                <SelectContent className="bg-card border-border">
-                  {timeSlots.map((slot) => (
-                    <SelectItem key={slot} value={slot}>
-                      {slot}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {timeSlots.map((slot) => (
+                  <Button
+                    key={slot}
+                    type="button"
+                    variant={time === slot ? 'gold' : 'outline'}
+                    size="sm"
+                    onClick={() => setTime(slot)}
+                  >
+                    {slot}
+                  </Button>
+                ))}
+              </div>
             </div>
 
             <Button 
               variant="gold" 
               className="w-full"
               disabled={!date || !time}
+              type="button"
               onClick={() => setStep(2)}
             >
               Continuar
@@ -216,7 +215,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
         {step === 2 && (
           <div className="space-y-4 animate-fade-in">
             <div className="p-3 bg-secondary/50 rounded-lg text-sm text-muted-foreground">
-              📅 {date && format(date, "EEEE, dd 'de' MMMM", { locale: ptBR })} às {time}
+              📅 {safeDate && format(safeDate, "EEEE, dd 'de' MMMM", { locale: ptBR })} às {time}
             </div>
 
             <div>
@@ -263,6 +262,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
                 variant="gold" 
                 className="flex-1"
                 disabled={isLoading}
+                type="button"
                 onClick={handleSubmit}
               >
                 {isLoading ? 'Agendando...' : 'Confirmar Agendamento'}
@@ -270,6 +270,7 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
             </div>
           </div>
         )}
+        </>)}
       </DialogContent>
     </Dialog>
   );
