@@ -30,7 +30,7 @@ const Footer = () => {
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               Termos de Uso
             </a>
-            <Link to="/auth" className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
+            <Link to="/admin" className="text-sm text-primary hover:text-primary/80 transition-colors font-medium">
               Painel Administrativo
             </Link>
           </div>
