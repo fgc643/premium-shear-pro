@@ -55,7 +55,8 @@ const Admin = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!authLoading && (!user || !isAdmin)) {
+    if (!authLoading && !user) { navigate('/auth'); return; }
+    if (!authLoading && user && !isAdmin) {
       navigate('/');
       toast({
         title: 'Acesso negado',
