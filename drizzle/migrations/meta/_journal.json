@@ -8,6 +8,13 @@
       "when": 1791927241079,
       "tag": "0000_prevent_double_booking",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793470248250,
+      "tag": "0001_bookings_admin_only_access",
+      "breakpoints": true
     }
   ]
 }
