@@ -6,27 +6,27 @@ const ContactSection = () => {
     {
       icon: MapPin,
       title: 'Endereço',
-      info: 'Rua das Barbas, 123 - Centro',
-      detail: 'São Paulo - SP',
+      info: 'Dados de demonstração',
+      detail: 'Endereço a definir',
     },
     {
       icon: Phone,
       title: 'Telefone',
-      info: '(11) 99999-9999',
+      info: '(11) 94786-8207',
       detail: 'WhatsApp disponível',
     },
     {
       icon: Clock,
       title: 'Horário',
       info: 'Seg - Sáb: 9h às 20h',
-      detail: 'Domingo: Fechado',
+      detail: 'Domingo: Fechado · dados de demonstração',
     },
   ];
 
   const socialLinks = [
     { icon: Instagram, label: 'Instagram', href: '#' },
     { icon: Facebook, label: 'Facebook', href: '#' },
-    { icon: MessageCircle, label: 'WhatsApp', href: '#' },
+    { icon: MessageCircle, label: 'WhatsApp', href: 'https://wa.me/5511947868207' },
   ];
 
   return (
@@ -109,7 +109,7 @@ const ContactSection = () => {
             {/* Floating CTA */}
             <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
               <Button variant="hero" size="lg" asChild>
-                <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
+                <a href="https://wa.me/5511947868207" target="_blank" rel="noopener noreferrer">
                   <MessageCircle className="w-5 h-5 mr-2" />
                   Agendar via WhatsApp
                 </a>

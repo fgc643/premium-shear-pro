@@ -41,8 +41,8 @@ const AboutSection = () => {
             
             {/* Floating Card */}
             <div className="absolute -bottom-8 -right-8 bg-card p-6 rounded-2xl shadow-gold border border-border animate-float">
-              <div className="text-5xl font-display font-bold text-gradient-gold mb-1">6+</div>
-              <div className="text-sm text-muted-foreground">Anos de Experiência</div>
+              <div className="text-5xl font-display font-bold text-gradient-gold mb-1">Demo</div>
+              <div className="text-sm text-muted-foreground">Dados de demonstração</div>
             </div>
 
             {/* Decorative elements */}
@@ -61,9 +61,8 @@ const AboutSection = () => {
             </h2>
             
             <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
-              Desde 2018, a Elite Barber Studio tem sido referência em cortes masculinos 
-              premium. Nossa missão é proporcionar uma experiência única, onde tradição 
-              e modernidade se encontram para realçar o melhor de cada cliente.
+              Dados de demonstração: este texto é um exemplo e será substituído pela 
+              história real da barbearia.
             </p>
 
             {/* Features Grid */}

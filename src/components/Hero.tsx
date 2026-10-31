@@ -20,7 +20,7 @@ const Hero = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-border mb-8 animate-fade-in">
               <Star className="w-4 h-4 text-primary" fill="currentColor" />
-              <span className="text-sm text-muted-foreground">Barbearia Premium desde 2018</span>
+              <span className="text-sm text-muted-foreground">Barbearia Premium · dados de demonstração</span>
             </div>
 
             {/* Main Title */}
@@ -50,10 +50,10 @@ const Hero = () => {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-fade-in" style={{ animationDelay: '0.8s' }}>
               {[
-                { icon: Scissors, value: '5000+', label: 'Cortes Realizados' },
-                { icon: Clock, value: '6 Anos', label: 'De Experiência' },
-                { icon: Star, value: '4.9', label: 'Avaliação Google' },
-                { icon: Award, value: 'Top 10', label: 'Melhor da Cidade' },
+                { icon: Scissors, value: '—', label: 'Cortes (demonstração)' },
+                { icon: Clock, value: '—', label: 'Experiência (demonstração)' },
+                { icon: Star, value: '—', label: 'Avaliação (demonstração)' },
+                { icon: Award, value: '—', label: 'Ranking (demonstração)' },
               ].map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <stat.icon className="w-5 h-5 text-primary mx-auto lg:mx-0 mb-2" />
@@ -84,8 +84,8 @@ const Hero = () => {
                     <Award className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <div className="text-2xl font-display font-bold text-gradient-gold">#1</div>
-                    <div className="text-xs text-muted-foreground">Da Região</div>
+                    <div className="text-2xl font-display font-bold text-gradient-gold">Demo</div>
+                    <div className="text-xs text-muted-foreground">Dados de demonstração</div>
                   </div>
                 </div>
               </div>
