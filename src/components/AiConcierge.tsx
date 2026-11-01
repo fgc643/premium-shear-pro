@@ -197,7 +197,7 @@ const AiConcierge = () => {
             <ConversationContent className="gap-5 p-4">
               {messages.length === 0 && (
                 <div className="flex flex-col items-center gap-4 py-6 text-center">
-                  <img src={avatar} alt="" width={72} height={72} className="h-18 w-18 rounded-full" />
+                  <img src={avatar} alt="" width={72} height={72} className="h-16 w-16 rounded-full" />
                   <div>
                     <p className="font-display text-lg font-bold text-foreground">Olá! Sou o Concierge Elite.</p>
                     <p className="text-sm text-muted-foreground">
@@ -297,7 +297,7 @@ const AiConcierge = () => {
             <PromptInput onSubmit={handleSubmit}>
               <PromptInputTextarea placeholder="Pergunte ou peça um horário..." autoFocus />
               <PromptInputFooter className="justify-end">
-                <PromptInputSubmit status={status} onStop={stop} disabled={!busy && false} />
+                <PromptInputSubmit status={status} onStop={stop} />
               </PromptInputFooter>
             </PromptInput>
             <p className="mt-1.5 text-center text-[11px] text-muted-foreground">
