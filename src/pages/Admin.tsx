@@ -35,6 +35,7 @@ import {
   Wallet
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import AdminAiPanel from '@/components/AdminAiPanel';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -242,6 +243,8 @@ const Admin = () => {
               </div>
             ))}
           </div>
+
+          <AdminAiPanel />
 
           {/* Caixa */}
           <div className="bg-card rounded-xl border border-border overflow-hidden mb-8">

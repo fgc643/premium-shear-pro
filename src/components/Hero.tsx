@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { Scissors, Clock, Award, Star } from 'lucide-react';
+import { Scissors, Clock, Award, Star, MessageCircle } from 'lucide-react';
+import { openConcierge } from '@/lib/ai';
 
 const Hero = () => {
   const scrollToServices = () => {
