@@ -49,6 +49,12 @@ const Navbar = () => {
               Serviços
             </button>
             <button 
+              onClick={() => scrollToSection('consultor')} 
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
+              Consultor IA
+            </button>
+            <button 
               onClick={() => scrollToSection('about')} 
               className="text-muted-foreground hover:text-primary transition-colors"
             >
@@ -102,6 +108,12 @@ const Navbar = () => {
               className="text-left text-muted-foreground hover:text-primary transition-colors py-2"
             >
               Serviços
+            </button>
+            <button 
+              onClick={() => scrollToSection('consultor')} 
+              className="text-left text-muted-foreground hover:text-primary transition-colors py-2"
+            >
+              Consultor IA
             </button>
             <button 
               onClick={() => scrollToSection('about')} 
