@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { Scissors, Clock, Award, Star } from 'lucide-react';
+import { Scissors, Clock, Award, Star, MessageCircle } from 'lucide-react';
+import { openConcierge } from '@/lib/ai';
 
 const Hero = () => {
   const scrollToServices = () => {
@@ -42,8 +43,9 @@ const Hero = () => {
                 <Scissors className="w-5 h-5 mr-2" />
                 Agendar Agora
               </Button>
-              <Button variant="outline" size="xl" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                Ver Serviços
+              <Button variant="outline" size="xl" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground" onClick={() => openConcierge()}>
+                <MessageCircle className="w-5 h-5 mr-2" />
+                Agendar com IA
               </Button>
             </div>
 
