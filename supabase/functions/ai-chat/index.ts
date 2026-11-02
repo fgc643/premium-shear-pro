@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
 import { convertToModelMessages, isStepCount, jsonSchema, tool, type UIMessage } from "npm:ai@7.0.159";
 import {
-  corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
+  brl, corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
 } from "../_shared/responses.ts";
 
 type Service = { id: string; name: string; price: number; duration_minutes: number; category: string; description: string | null };
@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
   };
 
   const servicesList = services
-    .map((s) => `- ${s.name} | id: ${s.id} | R$ ${Number(s.price).toFixed(2)} | ${s.duration_minutes} min | ${s.category} | ${s.description ?? ""}`)
+    .map((s) => `- ${s.name} | id: ${s.id} | ${brl(Number(s.price))} | ${s.duration_minutes} min | ${s.category} | ${s.description ?? ""}`)
     .join("\n");
 
   const instructions = `Você é o Concierge da Elite Barber Studio, uma barbearia premium em São Paulo. Fale sempre em português do Brasil, com tom elegante, acolhedor e direto. Respostas curtas (no máximo 4 frases ou uma lista curta), use **negrito** para nomes e preços.
