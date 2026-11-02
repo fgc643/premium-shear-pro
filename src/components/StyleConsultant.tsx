@@ -108,8 +108,10 @@ const StyleConsultant = () => {
               className="mt-4 bg-secondary border-border"
             />
             <Button variant="gold" className="mt-3 w-full" disabled={!image || loading} onClick={analyze}>
-              {loading ? <Loader2 className="mr-2 animate-spin" /> : <ImageUp className="mr-2" />}
-              {loading ? 'Analisando seu estilo...' : 'Analisar meu estilo'}
+              <span key={loading ? 'busy' : 'idle'} className="inline-flex items-center">
+                {loading ? <Loader2 className="mr-2 animate-spin" /> : <ImageUp className="mr-2" />}
+                <span>{loading ? 'Analisando seu estilo...' : 'Analisar meu estilo'}</span>
+              </span>
             </Button>
           </div>
 
