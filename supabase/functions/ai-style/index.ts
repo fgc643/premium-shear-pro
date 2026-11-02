@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
-import { corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
+import { brl, corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
 
 const MAX_BYTES = 6 * 1024 * 1024;
 
@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
   const { data: services } = await supabase
     .from("services").select("name,price,duration_minutes,description").eq("is_active", true);
   const list = (services ?? [])
-    .map((s) => `- ${s.name} (R$ ${Number(s.price).toFixed(2)}, ${s.duration_minutes} min): ${s.description ?? ""}`)
+    .map((s) => `- ${s.name} (${brl(Number(s.price))}, ${s.duration_minutes} min): ${s.description ?? ""}`)
     .join("\n");
 
   const instructions = `Você é o consultor de estilo da Elite Barber Studio, barbearia premium. Analise a foto enviada e responda em português do Brasil, em markdown, com estas seções curtas:
