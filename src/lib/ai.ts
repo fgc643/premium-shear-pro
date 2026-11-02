@@ -32,15 +32,26 @@ export function fileToResizedDataUrl(file: File, max = 1024): Promise<string> {
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      const ctx = canvas.getContext('2d');
-      if (!ctx) { URL.revokeObjectURL(url); reject(new Error('Não foi possível ler a foto.')); return; }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-      resolve(canvas.toDataURL('image/jpeg', 0.85));
+      try {
+        const w = img.naturalWidth || img.width;
+        const h = img.naturalHeight || img.height;
+        if (!w || !h) throw new Error('empty');
+        const scale = Math.min(1, max / Math.max(w, h));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(w * scale));
+        canvas.height = Math.max(1, Math.round(h * scale));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('no ctx');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        canvas.width = 0; canvas.height = 0; // free memory on phones
+        if (!dataUrl.startsWith('data:image/jpeg')) throw new Error('bad output');
+        resolve(dataUrl);
+      } catch {
+        reject(new Error('Não foi possível ler esta foto. Tente outra foto (JPG ou PNG).'));
+      } finally {
+        URL.revokeObjectURL(url);
+      }
     };
     img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Arquivo de imagem inválido.')); };
     img.src = url;

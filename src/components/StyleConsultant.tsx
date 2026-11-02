@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MessageResponse } from '@/components/ai-elements/message';
 import { fileToResizedDataUrl, invokeAi, openConcierge } from '@/lib/ai';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const StyleConsultant = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,8 @@ const StyleConsultant = () => {
     setError('');
     setResult('');
     try {
-      setResult(await invokeAi('ai-style', { image, note }));
+      const text = await invokeAi('ai-style', { image, note });
+      setResult(typeof text === 'string' ? text : String(text ?? ''));
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Erro ao analisar a foto.');
     } finally {
@@ -73,9 +75,8 @@ const StyleConsultant = () => {
               ref={inputRef}
               type="file"
               accept="image/*"
-              capture="user"
               className="hidden"
-              onChange={(e) => onFile(e.target.files?.[0])}
+              onChange={(e) => { void onFile(e.target.files?.[0]); }}
               aria-label="Enviar foto"
             />
             {image ? (
@@ -133,7 +134,12 @@ const StyleConsultant = () => {
             {result && (
               <div className="space-y-5">
                 <div className="text-foreground">
-                  <MessageResponse>{result}</MessageResponse>
+                  <ErrorBoundary
+                    resetKey={result}
+                    fallback={<p className="whitespace-pre-wrap leading-relaxed">{result.replace(/[#*]/g, '')}</p>}
+                  >
+                    <MessageResponse plugins={{}} mode="static">{result}</MessageResponse>
+                  </ErrorBoundary>
                 </div>
                 <Button
                   variant="gold"
