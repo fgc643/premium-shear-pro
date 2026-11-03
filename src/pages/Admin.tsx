@@ -94,7 +94,7 @@ const Admin = () => {
     }
   }, [user, isAdmin]);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -111,6 +111,7 @@ const Admin = () => {
 
       if (error) throw error;
       setBookings(data || []);
+      return true;
     } catch (error) {
       console.error('Error fetching bookings:', error);
       toast({
@@ -118,8 +119,39 @@ const Admin = () => {
         description: 'Não foi possível carregar os agendamentos.',
         variant: 'destructive',
       });
+      return false;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    const ok = await fetchBookings();
+    setIsRefreshing(false);
+    if (ok) toast({ title: 'Lista atualizada', description: 'Os agendamentos foram recarregados.' });
+  };
+
+  const cancelledCount = bookings.filter((b) => b.status === 'cancelled').length;
+
+  const clearCancelled = async () => {
+    if (cancelledCount === 0 || isClearing) return;
+    if (!window.confirm(`Apagar definitivamente ${cancelledCount} agendamento(s) cancelado(s)?`)) return;
+    setIsClearing(true);
+    try {
+      const { error } = await supabase.from('bookings').delete().eq('status', 'cancelled');
+      if (error) throw error;
+      setBookings((prev) => prev.filter((b) => b.status !== 'cancelled'));
+      toast({ title: 'Cancelados apagados', description: 'Todos os agendamentos cancelados foram removidos.' });
+    } catch (error) {
+      console.error('Error clearing cancelled bookings:', error);
+      toast({ title: 'Erro', description: 'Não foi possível apagar os cancelados.', variant: 'destructive' });
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -132,6 +164,7 @@ const Admin = () => {
 
       if (error) throw error;
 
+      setBookings((prev) => prev.map((b) => (b.id === bookingId ? { ...b, status: newStatus } : b)));
       toast({
         title: 'Status atualizado',
         description: `Agendamento marcado como ${statusConfig[newStatus as keyof typeof statusConfig].label}`,
@@ -146,8 +179,10 @@ const Admin = () => {
     }
   };
 
-  const filteredBookings = filterStatus === 'all' 
-    ? bookings 
+  // Cancelados somem da lista automaticamente; só aparecem no filtro "Cancelados".
+  const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+  const filteredBookings = filterStatus === 'all'
+    ? activeBookings
     : bookings.filter(b => b.status === filterStatus);
 
   const formatPrice = (price: number) => {
