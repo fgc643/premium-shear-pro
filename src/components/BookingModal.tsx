@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Service, supabase } from '@/lib/supabase';
+import { isSlotPast } from '@/lib/slots';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { CalendarIcon, Clock, User, Phone, CheckCircle } from 'lucide-react';
