@@ -62,8 +62,8 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
   }, [dateKey, isOpen]);
 
   useEffect(() => {
-    if (time && bookedSlots.includes(time) && !isSuccess && !isLoading) setTime('');
-  }, [bookedSlots]);
+    if (time && (bookedSlots.includes(time) || isSlotPast(dateKey, time)) && !isSuccess && !isLoading) setTime('');
+  }, [bookedSlots, dateKey]);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('pt-BR', {
@@ -219,15 +219,17 @@ const BookingModal = ({ isOpen, onClose, service }: BookingModalProps) => {
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                 {timeSlots.map((slot) => {
                   const taken = bookedSlots.includes(slot);
+                  const past = isSlotPast(dateKey, slot);
+                  const blocked = taken || past;
                   return (
                     <Button
                       key={slot}
                       type="button"
                       variant={time === slot ? 'gold' : 'outline'}
                       size="sm"
-                      disabled={taken}
-                      className={taken ? 'line-through opacity-40' : ''}
-                      title={taken ? 'Horário indisponível' : undefined}
+                      disabled={blocked}
+                      className={blocked ? 'line-through opacity-40' : ''}
+                      title={taken ? 'Horário indisponível' : past ? 'Horário já passou' : undefined}
                       onClick={() => setTime(slot)}
                     >
                       {slot}
