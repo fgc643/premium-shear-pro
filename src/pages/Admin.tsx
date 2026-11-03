@@ -29,6 +29,7 @@ import {
   User, 
   Phone,
   RefreshCw,
+  Trash2,
   CheckCircle,
   XCircle,
   AlertCircle,
@@ -255,10 +256,22 @@ const Admin = () => {
                 </div>
               </div>
 
-              <Button variant="outline" size="sm" onClick={fetchBookings}>
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Atualizar
-              </Button>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearCancelled}
+                  disabled={cancelledCount === 0 || isClearing}
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  <span>{isClearing ? 'Apagando...' : `Zerar cancelados (${cancelledCount})`}</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  <span>{isRefreshing ? 'Atualizando...' : 'Atualizar'}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -267,7 +280,7 @@ const Admin = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { label: 'Total', value: bookings.length, color: 'text-foreground' },
+              { label: 'Total', value: activeBookings.length, color: 'text-foreground' },
               { label: 'Pendentes', value: bookings.filter(b => b.status === 'pending').length, color: 'text-yellow-500' },
               { label: 'Confirmados', value: bookings.filter(b => b.status === 'confirmed').length, color: 'text-blue-500' },
               { label: 'Concluídos', value: bookings.filter(b => b.status === 'completed').length, color: 'text-green-500' },
@@ -357,7 +370,7 @@ const Admin = () => {
                 <SelectItem value="pending">Pendentes</SelectItem>
                 <SelectItem value="confirmed">Confirmados</SelectItem>
                 <SelectItem value="completed">Concluídos</SelectItem>
-                <SelectItem value="cancelled">Cancelados</SelectItem>
+                <SelectItem value="cancelled">Cancelados (ocultos)</SelectItem>
               </SelectContent>
             </Select>
           </div>
