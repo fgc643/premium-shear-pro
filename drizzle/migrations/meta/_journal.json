@@ -15,6 +15,13 @@
       "when": 1793470248250,
       "tag": "0001_bookings_admin_only_access",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793697939102,
+      "tag": "0002_revoke_trigger_fn_execute",
+      "breakpoints": true
     }
   ]
 }
