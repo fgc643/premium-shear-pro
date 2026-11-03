@@ -29,6 +29,7 @@ import {
   User, 
   Phone,
   RefreshCw,
+  Trash2,
   CheckCircle,
   XCircle,
   AlertCircle,
@@ -94,7 +95,7 @@ const Admin = () => {
     }
   }, [user, isAdmin]);
 
-  const fetchBookings = async () => {
+  const fetchBookings = async (): Promise<boolean> => {
     try {
       const { data, error } = await supabase
         .from('bookings')
@@ -111,6 +112,7 @@ const Admin = () => {
 
       if (error) throw error;
       setBookings(data || []);
+      return true;
     } catch (error) {
       console.error('Error fetching bookings:', error);
       toast({
@@ -118,8 +120,39 @@ const Admin = () => {
         description: 'Não foi possível carregar os agendamentos.',
         variant: 'destructive',
       });
+      return false;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    const ok = await fetchBookings();
+    setIsRefreshing(false);
+    if (ok) toast({ title: 'Lista atualizada', description: 'Os agendamentos foram recarregados.' });
+  };
+
+  const cancelledCount = bookings.filter((b) => b.status === 'cancelled').length;
+
+  const clearCancelled = async () => {
+    if (cancelledCount === 0 || isClearing) return;
+    if (!window.confirm(`Apagar definitivamente ${cancelledCount} agendamento(s) cancelado(s)?`)) return;
+    setIsClearing(true);
+    try {
+      const { error } = await supabase.from('bookings').delete().eq('status', 'cancelled');
+      if (error) throw error;
+      setBookings((prev) => prev.filter((b) => b.status !== 'cancelled'));
+      toast({ title: 'Cancelados apagados', description: 'Todos os agendamentos cancelados foram removidos.' });
+    } catch (error) {
+      console.error('Error clearing cancelled bookings:', error);
+      toast({ title: 'Erro', description: 'Não foi possível apagar os cancelados.', variant: 'destructive' });
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -132,6 +165,7 @@ const Admin = () => {
 
       if (error) throw error;
 
+      setBookings((prev) => prev.map((b) => (b.id === bookingId ? { ...b, status: newStatus } : b)));
       toast({
         title: 'Status atualizado',
         description: `Agendamento marcado como ${statusConfig[newStatus as keyof typeof statusConfig].label}`,
@@ -146,8 +180,10 @@ const Admin = () => {
     }
   };
 
-  const filteredBookings = filterStatus === 'all' 
-    ? bookings 
+  // Cancelados somem da lista automaticamente; só aparecem no filtro "Cancelados".
+  const activeBookings = bookings.filter((b) => b.status !== 'cancelled');
+  const filteredBookings = filterStatus === 'all'
+    ? activeBookings
     : bookings.filter(b => b.status === filterStatus);
 
   const formatPrice = (price: number) => {
@@ -220,10 +256,22 @@ const Admin = () => {
                 </div>
               </div>
 
-              <Button variant="outline" size="sm" onClick={fetchBookings}>
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Atualizar
-              </Button>
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={clearCancelled}
+                  disabled={cancelledCount === 0 || isClearing}
+                  className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  <span>{isClearing ? 'Apagando...' : `Zerar cancelados (${cancelledCount})`}</span>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  <span>{isRefreshing ? 'Atualizando...' : 'Atualizar'}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </header>
@@ -232,7 +280,7 @@ const Admin = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { label: 'Total', value: bookings.length, color: 'text-foreground' },
+              { label: 'Total', value: activeBookings.length, color: 'text-foreground' },
               { label: 'Pendentes', value: bookings.filter(b => b.status === 'pending').length, color: 'text-yellow-500' },
               { label: 'Confirmados', value: bookings.filter(b => b.status === 'confirmed').length, color: 'text-blue-500' },
               { label: 'Concluídos', value: bookings.filter(b => b.status === 'completed').length, color: 'text-green-500' },
@@ -322,7 +370,7 @@ const Admin = () => {
                 <SelectItem value="pending">Pendentes</SelectItem>
                 <SelectItem value="confirmed">Confirmados</SelectItem>
                 <SelectItem value="completed">Concluídos</SelectItem>
-                <SelectItem value="cancelled">Cancelados</SelectItem>
+                <SelectItem value="cancelled">Cancelados (ocultos)</SelectItem>
               </SelectContent>
             </Select>
           </div>
