@@ -89,8 +89,16 @@ const ContactSection = () => {
                 ))}
               </div>
             </div>
-          </div>
 
+            <div className="mt-10">
+              <Button variant="hero" size="lg" asChild>
+                <a href="https://wa.me/5511947868207" target="_blank" rel="noopener noreferrer">
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  Agendar via WhatsApp
+                </a>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
