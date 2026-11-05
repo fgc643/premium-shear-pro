@@ -36,7 +36,10 @@ const StyleConsultant = () => {
       const text = await invokeAi('ai-style', { image, note });
       setResult(typeof text === 'string' ? text : String(text ?? ''));
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Erro ao analisar a foto.');
+      const msg = e instanceof Error ? e.message : '';
+      // Keep photo-validation hints; any other failure gets the single demo message.
+      const photoHints = ['Envie uma foto', 'A foto é grande', 'Pedido inválido', 'A IA não conseguiu analisar'];
+      setError(photoHints.some((h) => msg.startsWith(h)) ? msg : 'A demonstração de IA está indisponível no momento. Tente novamente mais tarde.');
     } finally {
       setLoading(false);
     }
