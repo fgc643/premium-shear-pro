@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
-import { brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
+import { AI_UNAVAILABLE_MESSAGE, brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 
@@ -8,7 +8,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return jsonResponse({ error: "Método não permitido" }, 405);
 
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!apiKey) return jsonResponse({ error: "A IA não está configurada." }, 500);
+  if (!apiKey) return jsonResponse({ error: AI_UNAVAILABLE_MESSAGE }, 500);
 
   let image = "";
   let note = "";
@@ -70,6 +70,7 @@ Seja elegante e positivo, sem comentar aparência de forma negativa, idade, etni
     return jsonResponse({ text });
   } catch (e) {
     const { status, message } = describeAiError(streamError ?? e);
-    return jsonResponse({ error: message }, status);
+    console.error("ai-style error", status, message);
+    return jsonResponse({ error: AI_UNAVAILABLE_MESSAGE }, status >= 400 && status < 600 ? status : 500);
   }
 });

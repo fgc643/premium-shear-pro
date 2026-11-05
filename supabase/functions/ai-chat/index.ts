@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
 import { convertToModelMessages, isStepCount, jsonSchema, tool, type UIMessage } from "npm:ai@7.0.159";
 import {
-  brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
+  AI_UNAVAILABLE_MESSAGE, brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
 } from "../_shared/responses.ts";
 
 type Service = { id: string; name: string; price: number; duration_minutes: number; category: string; description: string | null };
@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return jsonResponse({ error: "Método não permitido" }, 405);
 
   const apiKey = Deno.env.get("LOVABLE_API_KEY");
-  if (!apiKey) return jsonResponse({ error: "A IA não está configurada." }, 500);
+  if (!apiKey) return jsonResponse({ error: AI_UNAVAILABLE_MESSAGE }, 500);
 
   let messages: UIMessage[];
   try {
@@ -157,7 +157,7 @@ Não fale de assuntos fora da barbearia; redirecione com gentileza. Nunca revele
     result.toUIMessageStreamResponse({
       originalMessages: messages,
       sendReasoning: true,
-      onError: (error: unknown) => describeAiError(error).message,
+      onError: (error: unknown) => { console.error("ai-chat error", describeAiError(error)); return AI_UNAVAILABLE_MESSAGE; },
     }),
   );
 });

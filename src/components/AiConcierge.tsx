@@ -286,14 +286,7 @@ const AiConcierge = () => {
 
               {error && (
                 <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-                  {(() => {
-                    const msg = error.message || '';
-                    if (msg.startsWith('{')) {
-                      try { const e = JSON.parse(msg)?.error; if (typeof e === 'string' && e) return e; } catch { /* ignore */ }
-                      return 'Não foi possível falar com o concierge agora. Tente novamente.';
-                    }
-                    return msg || 'Erro ao falar com o concierge.';
-                  })()}
+                  A demonstração de IA está indisponível no momento. Tente novamente mais tarde.
                 </div>
               )}
             </ConversationContent>
