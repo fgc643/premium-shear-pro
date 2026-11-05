@@ -24,7 +24,7 @@ As funções de IA têm limite por visitante (5 pedidos por hora) e limite diár
 
 ## Limitações atuais
 
-- É uma demonstração: o endereço, o telefone e os depoimentos são de exemplo.
+- É uma demonstração: o endereço e os textos são de exemplo.
 - Quando os créditos de IA acabam, o chat e o consultor mostram uma mensagem de indisponibilidade.
 - Ainda não há testes automatizados.
 - Não há pagamento online.
