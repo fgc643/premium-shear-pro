@@ -12,8 +12,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>Elite Barber Studio | Barbearia Premium em São Paulo</title>
-        <meta name="description" content="Barbearia premium com cortes masculinos de alta qualidade. Agende seu horário e experimente o melhor em cortes, barba e tratamentos capilares." />
+        <title>Elite Barber Studio | Demonstração de agendamento com IA</title>
+        <meta name="description" content="Demonstração de sistema de agendamento online com atendente de IA para barbearias." />
         <meta name="keywords" content="barbearia, corte masculino, barba, degradê, São Paulo, premium" />
         <link rel="canonical" href="https://elitebarberstudio.com" />
       </Helmet>

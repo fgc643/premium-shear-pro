@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Scissors, Clock, Award, Star, MessageCircle } from 'lucide-react';
+import { Scissors, Award, Star, MessageCircle } from 'lucide-react';
 import { openConcierge } from '@/lib/ai';
 
 const Hero = () => {
@@ -38,7 +38,7 @@ const Hero = () => {
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-12 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
               <Button variant="gold" size="xl" onClick={scrollToServices}>
                 <Scissors className="w-5 h-5 mr-2" />
                 Agendar Agora
@@ -47,22 +47,6 @@ const Hero = () => {
                 <MessageCircle className="w-5 h-5 mr-2" />
                 Agendar com IA
               </Button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 animate-fade-in" style={{ animationDelay: '0.8s' }}>
-              {[
-                { icon: Scissors, value: '—', label: 'Cortes (demonstração)' },
-                { icon: Clock, value: '—', label: 'Experiência (demonstração)' },
-                { icon: Star, value: '—', label: 'Avaliação (demonstração)' },
-                { icon: Award, value: '—', label: 'Ranking (demonstração)' },
-              ].map((stat, index) => (
-                <div key={index} className="text-center lg:text-left">
-                  <stat.icon className="w-5 h-5 text-primary mx-auto lg:mx-0 mb-2" />
-                  <div className="text-xl md:text-2xl font-display font-bold text-foreground">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
             </div>
           </div>
 

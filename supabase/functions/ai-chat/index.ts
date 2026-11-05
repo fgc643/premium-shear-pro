@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
 import { convertToModelMessages, isStepCount, jsonSchema, tool, type UIMessage } from "npm:ai@7.0.159";
 import {
-  brl, corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
+  brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse, saoPauloNow, TIME_SLOTS,
 } from "../_shared/responses.ts";
 
 type Service = { id: string; name: string; price: number; duration_minutes: number; category: string; description: string | null };
@@ -24,6 +24,9 @@ Deno.serve(async (req) => {
     return jsonResponse({ error: "Pedido inválido." }, 400);
   }
   messages = messages.slice(-40);
+
+  const limited = await checkDemoQuota(req, "ai-chat");
+  if (limited) return limited;
 
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
     auth: { persistSession: false },
