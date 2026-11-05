@@ -4,7 +4,7 @@ Demonstração de sistema de agendamento online com atendente de IA para barbear
 
 > Projeto de demonstração feito com apoio de IA (Lovable). Todos os dados e textos são de exemplo.
 
-**Ver funcionando:** https://premium-shear-pro.vercel.app/
+**Ver funcionando:** https://elite-barbearia-studio.vercel.app/
 
 ## O que o sistema faz
 
