@@ -1,73 +1,41 @@
-# Welcome to your Lovable project
+# Elite Barber Studio
 
-## Project info
+Demonstração de sistema de agendamento online com atendente de IA para barbearias.
 
-**URL**: https://lovable.dev/projects/53f1c52e-38e3-4a5d-b5a9-9031cd0094ac
+> Projeto de demonstração feito com apoio de IA (Lovable). Todos os dados e textos são de exemplo.
 
-## How can I edit this code?
+**Ver funcionando:** https://premium-shear-pro.vercel.app/
 
-There are several ways of editing your application.
+## O que o sistema faz
 
-**Use Lovable**
+- O cliente escolhe serviço, barbeiro e horário e agenda online.
+- Um horário já reservado não pode ser marcado duas vezes: a regra é aplicada no banco de dados.
+- Atendente de IA (Concierge) conversa com o cliente e ajuda a agendar.
+- Consultor de estilo: o cliente envia uma selfie e a IA sugere cortes.
+- Painel do administrador para ver e gerenciar os agendamentos.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/53f1c52e-38e3-4a5d-b5a9-9031cd0094ac) and start prompting.
+## Tecnologias
 
-Changes made via Lovable will be committed automatically to this repo.
+React, TypeScript, Vite, Tailwind CSS, shadcn/ui, Supabase (banco de dados, login e funções de servidor), migrações com Drizzle, publicação na Vercel.
 
-**Use your preferred IDE**
+## Como protegi o uso da IA
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+As funções de IA têm limite por visitante (5 pedidos por hora) e limite diário do site (60 pedidos), com tamanho máximo de 5 MB para a foto. O visitante é identificado por um código embaralhado, sem guardar o endereço de internet puro.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Limitações atuais
 
-Follow these steps:
+- É uma demonstração: o endereço, o telefone e os depoimentos são de exemplo.
+- Quando os créditos de IA acabam, o chat e o consultor mostram uma mensagem de indisponibilidade.
+- Ainda não há testes automatizados.
+- Não há pagamento online.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Como rodar
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. Instale as dependências com `npm install`.
+2. Crie um projeto no Supabase e aplique as migrações da pasta `supabase/migrations`.
+3. Configure no `.env` a URL e a chave pública do seu projeto Supabase.
+4. Rode com `npm run dev`.
 
-# Step 3: Install the necessary dependencies.
-npm i
+## Autor
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/53f1c52e-38e3-4a5d-b5a9-9031cd0094ac) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Flávio Silva, desenvolvedor de aplicações web assistido por IA, Diadema, SP.
