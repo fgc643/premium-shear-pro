@@ -19,7 +19,7 @@ const Footer = () => {
 
           {/* Copyright */}
           <p className="text-muted-foreground text-sm flex items-center gap-1">
-            Feito com <Heart className="w-4 h-4 text-primary" fill="currentColor" /> © 2024 Elite Barber Studio
+            Feito com <Heart className="w-4 h-4 text-primary" fill="currentColor" /> © 2026 Elite Barber Studio
           </p>
 
           {/* Links */}

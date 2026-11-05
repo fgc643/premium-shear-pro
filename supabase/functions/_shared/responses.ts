@@ -109,3 +109,22 @@ export const TIME_SLOTS = [
 ];
 
 export const brl = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(v);
+
+export const DEMO_LIMIT_MESSAGE = "Limite de uso da demonstração atingido. Tente novamente mais tarde.";
+
+/** Demo usage cap: 15 requests/hour per visitor (by hashed IP) and 300/day in total across AI chat + style. */
+export async function checkDemoQuota(req: Request, fn: string): Promise<Response | null> {
+  const ip = (req.headers.get("x-forwarded-for")?.split(",")[0] || req.headers.get("cf-connecting-ip") || req.headers.get("x-real-ip") || "unknown").trim();
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`elite-ai-demo:${ip}`));
+  const ipHash = Array.from(new Uint8Array(digest)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  const url = Deno.env.get("SUPABASE_URL")!;
+  const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+  const res = await fetch(`${url}/rest/v1/rpc/consume_ai_quota`, {
+    method: "POST",
+    headers: { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ _ip_hash: ipHash, _fn: fn, _per_hour: 15, _per_day: 300 }),
+  });
+  if (!res.ok) return jsonResponse({ error: "Não foi possível falar com a IA agora. Tente novamente em instantes." }, 503);
+  const allowed = await res.json();
+  return allowed === true ? null : jsonResponse({ error: DEMO_LIMIT_MESSAGE }, 429);
+}

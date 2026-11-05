@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2.86.2";
-import { brl, corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
+import { brl, checkDemoQuota, corsHeaders, createResponsesCall, describeAiError, jsonResponse } from "../_shared/responses.ts";
 
-const MAX_BYTES = 6 * 1024 * 1024;
+const MAX_BYTES = 5 * 1024 * 1024;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -22,7 +22,10 @@ Deno.serve(async (req) => {
   if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(image)) {
     return jsonResponse({ error: "Envie uma foto em JPG, PNG ou WEBP." }, 400);
   }
-  if (image.length * 0.75 > MAX_BYTES) return jsonResponse({ error: "A foto é grande demais (máx. 6 MB)." }, 400);
+  if (image.length * 0.75 > MAX_BYTES) return jsonResponse({ error: "A foto é grande demais (máx. 5 MB)." }, 400);
+
+  const limited = await checkDemoQuota(req, "ai-style");
+  if (limited) return limited;
 
   const supabase = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
     auth: { persistSession: false },

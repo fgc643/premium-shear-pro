@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_usage: {
+        Row: {
+          created_at: string
+          fn: string
+          id: number
+          ip_hash: string
+        }
+        Insert: {
+          created_at?: string
+          fn: string
+          id?: number
+          ip_hash: string
+        }
+        Update: {
+          created_at?: string
+          fn?: string
+          id?: number
+          ip_hash?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           booking_date: string
@@ -141,6 +162,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      consume_ai_quota: {
+        Args: {
+          _fn: string
+          _ip_hash: string
+          _per_day: number
+          _per_hour: number
+        }
+        Returns: boolean
+      }
       get_booked_slots: {
         Args: { _date: string }
         Returns: {
